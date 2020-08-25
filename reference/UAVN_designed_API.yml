@@ -1,0 +1,844 @@
+openapi: 3.0.0
+info:
+  title: Visionair Respondrone
+  version: '1.0'
+  contact:
+    name: Jorge López-Diéguez
+    email: jlopez@uavnavigation.com
+  description: Visionair API for Respondrone project
+servers:
+  - url: 'http://localhost:22000'
+paths:
+  /Autopilots:
+    get:
+      summary: 0.2.1 Get All Autopilots Info
+      tags:
+        - 0 Autopilots
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Autopilot'
+              examples: {}
+      operationId: get-Autopilots
+      description: Gets the information of all the autopilots
+  '/Autopilots/{Id}':
+    parameters:
+      - schema:
+          type: string
+        name: Id
+        in: path
+        required: true
+    get:
+      summary: 0.2.2 Get Autopilot Info
+      tags:
+        - 0 Autopilots
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Autopilot'
+        '404':
+          description: Autopilot Not Found
+      operationId: get-Autopilots-Id
+      description: Gets the information of a single autopilot
+  '/Autopilots/{Id}/Mode':
+    parameters:
+      - schema:
+          type: string
+        name: Id
+        in: path
+        required: true
+    put:
+      summary: 0.3 Set Autopilot Mode
+      operationId: put-Autopilots-Id-Mode
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: 'Unauthorized: Internal pilot rejected the request'
+        '404':
+          description: Autopilot Not Found
+      description: Changes the mode of an autopilot
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Guidance Mode:
+                  $ref: '#/components/schemas/Guidance-Mode'
+                Coordinates:
+                  $ref: '#/components/schemas/Coordinates'
+                Altitude:
+                  $ref: '#/components/schemas/Altitude'
+                Speed (m/s):
+                  type: number
+                FP/LP ID:
+                  type: integer
+              required:
+                - Guidance Mode
+      tags:
+        - 0 Autopilots
+  '/Autopilots/{Id}/CameraTarget':
+    parameters:
+      - schema:
+          type: string
+        name: Id
+        in: path
+        required: true
+    put:
+      summary: 0.4 Set Camera Target
+      operationId: put-Autopilots-Id-CameraTarget
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: 'Unauthorized: Internal pilot rejected the request'
+        '404':
+          description: Autopilot Not Found
+      description: Changes the camera target point
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Position'
+      tags:
+        - 0 Autopilots
+  '/Autopilots/{Id}/Pre-Flight':
+    parameters:
+      - schema:
+          type: string
+        name: Id
+        in: path
+        required: true
+    put:
+      summary: 0.1 Set Autopilot Pre-Flight Parameters
+      operationId: put-Autopilots-Id-Pre-Flight
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: 'Unauthorized: Internal pilot rejected the request'
+        '404':
+          description: Autopilot Not Found
+      description: Sets the pre-flight parameters of an autopilot
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                GCS Position:
+                  $ref: '#/components/schemas/Position'
+                Take-Off Departure Altitude (m):
+                  type: number
+                Landing Site Position:
+                  $ref: '#/components/schemas/Position'
+                Land Heading (rad):
+                  type: number
+                Land Offset (m):
+                  type: number
+                Default FP:
+                  type: integer
+                Use Nearest LP?:
+                  type: boolean
+                Default LP:
+                  type: integer
+                Safety Altitude ASL (m):
+                  type: number
+                Is Low Altitude Threshold Enabled?:
+                  type: boolean
+                Low Altitude ASL (m):
+                  type: number
+                Is High Altitude Threshold Enabled?:
+                  type: boolean
+                High Altitude ASL (m):
+                  type: number
+                Bingo Time (ms):
+                  type: integer
+                Mission Time Offset (ms):
+                  type: integer
+                QNH/Barometric Altitude:
+                  type: string
+                  enum:
+                    - QNH
+                    - Barometric Altitude
+                QNH (pa)/Barometric Altitude (m):
+                  type: number
+              required:
+                - GCS Position
+                - Take-Off Departure Altitude (m)
+                - Landing Site Position
+                - Land Heading (rad)
+                - Land Offset (m)
+                - Default FP
+                - Use Nearest LP?
+                - Safety Altitude ASL (m)
+                - Is Low Altitude Threshold Enabled?
+                - Is High Altitude Threshold Enabled?
+                - Bingo Time (ms)
+                - Mission Time Offset (ms)
+                - QNH/Barometric Altitude
+                - QNH (pa)/Barometric Altitude (m)
+      tags:
+        - 0 Autopilots
+  '/Autopilots/{Id}/FlightPlans':
+    parameters:
+      - schema:
+          type: string
+        name: Id
+        in: path
+        required: true
+    get:
+      summary: 1.1.1 Get Loaded Flight Plans
+      tags:
+        - 1 Flight Plans
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                minItems: 32
+                maxItems: 32
+                description: Bitmap of loaded FPs
+                items:
+                  type: boolean
+        '401':
+          description: 'Unauthorized: Internal pilot rejected the request'
+        '404':
+          description: Autopilot Not Found
+          content:
+            application/json:
+              schema:
+                type: array
+                minItems: 32
+                maxItems: 32
+                items:
+                  type: boolean
+      operationId: get-Autopilots-Id-FlightPlans
+      description: Gets the indices of the flight plans loaded in the autopilot
+    delete:
+      summary: 1.1.2 Delete All Loaded Flight Plans
+      operationId: delete-Autopilots-Id-FlightPlans
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Indices of flight plans kept (not deleted)
+                items:
+                  type: integer
+        '401':
+          description: 'Unauthorized: Internal pilot rejected the request'
+        '404':
+          description: Autopilot Not Found
+      description: Deletes all the loaded flight plans
+      tags:
+        - 1 Flight Plans
+  '/Autopilots/{Id}/FlightPlans/{FP_Id}':
+    parameters:
+      - schema:
+          type: string
+        name: Id
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: FP_Id
+        in: path
+        required: true
+    get:
+      summary: 1.2.1 Get Flight Plan
+      tags:
+        - 1 Flight Plans
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Variable Speed:
+                    type: boolean
+                  Is Cyclic:
+                    type: boolean
+                  Number of WPs:
+                    type: integer
+                  Waypoints:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Waypoint'
+                required:
+                  - Variable Speed
+                  - Is Cyclic
+                  - Number of WPs
+                  - Waypoints
+        '404':
+          description: Autopilot or Flight Plan Not Found
+      operationId: get-Autopilots-Id-FlightPlans-FP_Id
+      description: Gets a flight plan loaded in the autopilot
+    put:
+      summary: 1.2.2 Upload Flight Plan
+      operationId: put-Autopilots-Id-FlightPlans-FP_Id
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: 'Unauthorized: Internal pilot rejected the request'
+        '404':
+          description: Autopilot Not Found
+      description: Uploads a flight plan to the autopilot
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Variable Speed:
+                  type: boolean
+                Is Cyclic:
+                  type: boolean
+                Number of Waypoints:
+                  type: integer
+                Waypoints:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/WaypointSet'
+              required:
+                - Variable Speed
+                - Is Cyclic
+                - Number of Waypoints
+                - Waypoints
+      tags:
+        - 1 Flight Plans
+    delete:
+      summary: 1.2.3 Delete Flight Plan
+      operationId: delete-Autopilots-Id-FlightPlans-FP_Id
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: 'Unauthorized: Internal pilot rejected the request'
+        '403':
+          description: Forbidden
+        '404':
+          description: Autopilot or Flight Plan Not Found
+      description: Deletes a flight plan loaded in the autopilot
+      tags:
+        - 1 Flight Plans
+  '/Autopilots/{Id}/LandPlans':
+    parameters:
+      - schema:
+          type: string
+        name: Id
+        in: path
+        required: true
+    get:
+      summary: 2.1.1 Get Loaded Land Plans
+      tags:
+        - 2 Land Plans
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Bitmap of loaded land plans
+                minItems: 32
+                maxItems: 32
+                items:
+                  type: boolean
+        '404':
+          description: Autopilot Not Found
+      operationId: get-Autopilots-Id-LandingPlans
+      description: Gets the land plans loaded in the autopilot
+    delete:
+      summary: 2.1.2 Delete All Land Plans
+      operationId: delete-Autopilots-Id-LandingPlans
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                minItems: 32
+                maxItems: 32
+                description: Indices of land plans kept (not deleted)
+                items:
+                  type: boolean
+        '401':
+          description: 'Unauthorized: Internal pilot rejected the request'
+        '404':
+          description: Autopilot Not Found
+      description: 'Deletes all the land plans loaded in the autopilot, except for the default one and the one being executed.'
+      tags:
+        - 2 Land Plans
+  '/Autopilots/{Id}/LandPlans/{LP_Id}':
+    parameters:
+      - schema:
+          type: string
+        name: Id
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: LP_Id
+        in: path
+        required: true
+    get:
+      summary: 2.2.1 Get Land Plan
+      tags:
+        - 2 Land Plans
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Landing Site:
+                    $ref: '#/components/schemas/Position'
+                  Landing Site Altitude AGL (m):
+                    type: number
+                  Landing Site Heading (rad):
+                    type: number
+                  Land Offset (m):
+                    type: number
+                  Number of Waypoints:
+                    type: integer
+                  Waypoints:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LandWaypoint'
+                required:
+                  - Landing Site
+                  - Landing Site Heading (rad)
+                  - Number of Waypoints
+                  - Waypoints
+        '404':
+          description: Autopilot or Land Plan Not Found
+      operationId: get-Autopilots-Id-LandPlans-LP_Id
+      description: Gets a land plan
+    put:
+      summary: 2.2.2 Upload Land Plan
+      operationId: put-Autopilots-Id-LandPlans-LP_Id
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: 'Unauthorized: Internal pilot rejected the request'
+        '404':
+          description: Autopilot Not Found
+      description: Uploads a land plan to the autopilot
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Landing Site Coordinates:
+                  $ref: '#/components/schemas/Coordinates'
+                Is Landing Site Altitude AGL:
+                  type: boolean
+                Landing Site Altitude (m):
+                  type: number
+                Landing Site Heading (rad):
+                  type: number
+                Land Offset (m):
+                  type: number
+              required:
+                - Landing Site Coordinates
+                - Is Landing Site Altitude AGL
+                - Landing Site Altitude (m)
+                - Landing Site Heading (rad)
+                - Land Offset (m)
+      tags:
+        - 2 Land Plans
+    delete:
+      summary: 2.2.3 Delete Land Plan
+      operationId: delete-Autopilots-Id-LandPlans-LP_Id
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: 'Unauthorized: Internal pilot rejected the request'
+        '403':
+          description: Forbidden
+        '404':
+          description: Autopilot or Land Plan Not Found
+      description: Deletes a land plan loaded in the autopilot
+      tags:
+        - 2 Land Plans
+  '/Autopilots/{Id}/NoFlyZones':
+    parameters:
+      - schema:
+          type: string
+        name: Id
+        in: path
+        required: true
+    delete:
+      summary: 3.1 Delete All No Fly Zones
+      operationId: delete-Autopilots-Id-NoFlyZones
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: 'Unauthorized: Internal pilot rejected the request'
+        '404':
+          description: Autopilot Not Found
+      description: Deletes all the no fly zones loaded in the autopilot
+      tags:
+        - 3 No Fly Zones
+  '/Autopilots/{Id}/NoFlyZones/{NFZ_Id}':
+    parameters:
+      - schema:
+          type: string
+        name: Id
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: NFZ_Id
+        in: path
+        required: true
+    get:
+      summary: 3.2.1 Get No Fly Zone
+      tags:
+        - 3 No Fly Zones
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Center:
+                    $ref: '#/components/schemas/Coordinates'
+                  Radius (m):
+                    type: number
+                required:
+                  - Center
+                  - Radius (m)
+        '404':
+          description: Autopilot or No Fly Zone Not Found
+      operationId: get-Autopilots-Id-NoFlyZones-NFZ_Id
+      description: Gets a no fly zone loaded in the autopilot
+    put:
+      summary: 3.2.2 Upload No Fly Zone
+      operationId: put-Autopilots-Id-NoFlyZones-NFZ_Id
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: 'Unauthorized: Internal pilot rejected the request'
+        '404':
+          description: Autopilot Not Found
+      description: Uploads a no fly zone to the autopilot
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Center:
+                  $ref: '#/components/schemas/Coordinates'
+                Radius (m):
+                  type: number
+              required:
+                - Center
+                - Radius (m)
+      tags:
+        - 3 No Fly Zones
+    delete:
+      summary: 3.2.3 Delete No Fly Zone
+      operationId: delete-Autopilots-Id-NoFlyZones-NFZ_Id
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: 'Unauthorized: Internal pilot rejected the request'
+        '404':
+          description: Autopilot Not Found
+      description: Deletes a no fly zone loaded in the autopilot
+      tags:
+        - 3 No Fly Zones
+  /POIs:
+    get:
+      summary: 4.1.1 Get All Points Of Interest
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PointOfInterest'
+      operationId: get-POIs
+      description: Gets all the points of interest
+      tags:
+        - 4 Points Of Interest
+    put:
+      summary: 4.1.2 Create Point Of Interest
+      operationId: put-POIs
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+      description: Creates a point of interest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PointOfInterest'
+      tags:
+        - 4 Points Of Interest
+    delete:
+      summary: 4.1.3 Delete Point Of Interest
+      operationId: delete-POIs
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: POI Not Found
+      description: Deletes a point of interest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+              description: Name of the POI
+      tags:
+        - 4 Points Of Interest
+components:
+  schemas:
+    Position:
+      title: Position
+      type: object
+      x-tags:
+        - Models
+      properties:
+        Coordinates:
+          $ref: '#/components/schemas/Coordinates'
+        Altitude ASL (m):
+          type: number
+      required:
+        - Coordinates
+        - Altitude ASL (m)
+    Coordinates:
+      title: Coordinates
+      type: object
+      properties:
+        Latitude (deg):
+          type: number
+        Longitude (deg):
+          type: number
+      required:
+        - Latitude (deg)
+        - Longitude (deg)
+      x-tags:
+        - Models
+    Autopilot:
+      title: Autopilot
+      type: object
+      x-tags:
+        - Models
+      properties:
+        AP Id:
+          type: integer
+        Current Position:
+          $ref: '#/components/schemas/Position'
+        Current Altitude AGL (m):
+          type: number
+        Current IAS (m/s):
+          type:
+            - number
+            - 'null'
+        Current Ground Speed (m/s):
+          type:
+            - number
+            - 'null'
+        Current FP ID:
+          type: integer
+        Destination Waypoint:
+          $ref: '#/components/schemas/Position'
+        Destination Waypoint AGL (m):
+          type: number
+        Commanded Speed (m/s):
+          type: number
+        Mission Remaining Time (ms):
+          type: integer
+        Range from GCS to AP (m):
+          type: number
+        Guidance Mode:
+          $ref: '#/components/schemas/Guidance-Mode'
+        Alarms:
+          type: array
+          items:
+            type: string
+        Yaw (rad):
+          type: number
+        Pitch (rad):
+          type: number
+        Roll (rad):
+          type: number
+        Timestamp (ms):
+          type:
+            - string
+            - integer
+        Wind Speed (m/s):
+          type: number
+        Wind Direction (rad):
+          type: number
+        Camera Target:
+          $ref: '#/components/schemas/Coordinates'
+      required:
+        - AP Id
+        - Current Position
+        - Current IAS (m/s)
+        - Current Ground Speed (m/s)
+        - Destination Waypoint
+        - Commanded Speed (m/s)
+        - Mission Remaining Time (ms)
+        - Range from GCS to AP (m)
+        - Guidance Mode
+        - Alarms
+        - Yaw (rad)
+        - Pitch (rad)
+        - Roll (rad)
+        - Timestamp (ms)
+        - Wind Speed (m/s)
+        - Wind Direction (rad)
+        - Camera Target
+    Guidance-Mode:
+      type: string
+      title: Guidance Mode
+      enum:
+        - Take-Off
+        - Auto
+        - Land
+        - Loiter
+        - Hover
+        - Nav-To
+      description: Enum containing the different guidance modes available
+      x-tags:
+        - Models
+    Altitude:
+      title: Altitude
+      type: object
+      properties:
+        Is Altitude AGL:
+          type: boolean
+        Altitude (m):
+          type: number
+      required:
+        - Is Altitude AGL
+        - Altitude (m)
+      x-tags:
+        - Models
+      description: ''
+    Waypoint:
+      title: Waypoint
+      type: object
+      properties:
+        Position:
+          $ref: '#/components/schemas/Position'
+        Altitude AGL (m):
+          type: number
+        Speed (m/s):
+          type: number
+        Overfly:
+          type: boolean
+      required:
+        - Position
+        - Speed (m/s)
+        - Overfly
+      x-tags:
+        - Models
+    WaypointSet:
+      title: WaypointSet
+      type: object
+      properties:
+        Coordinates:
+          $ref: '#/components/schemas/Coordinates'
+        Is Altitude AGL:
+          type: boolean
+        Altitude (m):
+          type: number
+        Speed (m/s):
+          type: number
+        Overfly:
+          type: boolean
+      required:
+        - Coordinates
+        - Is Altitude AGL
+        - Altitude (m)
+        - Speed (m/s)
+        - Overfly
+      x-tags:
+        - Models
+    LandWaypoint:
+      title: LandWaypoint
+      type: object
+      properties:
+        Position:
+          $ref: '#/components/schemas/Position'
+        Altitude AGL (m):
+          type: number
+        Speed (m/s):
+          type: number
+        Overfly:
+          type: boolean
+        Next Waypoint Index:
+          type: integer
+      required:
+        - Position
+        - Speed (m/s)
+        - Overfly
+      x-tags:
+        - Models
+    PointOfInterest:
+      title: PointOfInterest
+      type: object
+      properties:
+        Type:
+          type: integer
+          maximum: 9
+          minimum: 0
+        Name:
+          type: string
+        Coordinates:
+          $ref: '#/components/schemas/Coordinates'
+      required:
+        - Type
+        - Name
+        - Coordinates
+      x-tags:
+        - Models
