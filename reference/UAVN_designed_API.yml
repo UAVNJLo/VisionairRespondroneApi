@@ -633,10 +633,16 @@ paths:
         content:
           application/json:
             schema:
-              type: string
-              description: Name of the POI
+              type: object
+              properties:
+                Name:
+                  type: string
+                  description: Name of the POI
+              required:
+                - Name
       tags:
         - 4 Points Of Interest
+      parameters: []
 components:
   schemas:
     Position:
