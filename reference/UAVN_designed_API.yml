@@ -11,7 +11,7 @@ servers:
 paths:
   /Autopilots:
     get:
-      summary: 0.2.1 Get All Autopilots Info
+      summary: 0.2.1 GET All Autopilots Info
       tags:
         - 0 Autopilots
       responses:
@@ -245,10 +245,6 @@ paths:
                 description: Indices of flight plans kept (not deleted)
                 items:
                   type: integer
-        '401':
-          description: 'Unauthorized: Internal pilot rejected the request'
-        '404':
-          description: Autopilot Not Found
       description: Deletes all the loaded flight plans
       tags:
         - 1 Flight Plans
@@ -390,8 +386,6 @@ paths:
                   type: boolean
         '401':
           description: 'Unauthorized: Internal pilot rejected the request'
-        '404':
-          description: Autopilot Not Found
       description: 'Deletes all the land plans loaded in the autopilot, except for the default one and the one being executed.'
       tags:
         - 2 Land Plans
@@ -425,7 +419,7 @@ paths:
                     type: number
                   Landing Site Heading (rad):
                     type: number
-                  Land Offset (m):
+                  Land Offset:
                     type: number
                   Number of Waypoints:
                     type: integer
@@ -633,31 +627,22 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                Name:
-                  type: string
-                  description: Name of the POI
-              required:
-                - Name
+              type: string
+              description: Name of the POI
       tags:
         - 4 Points Of Interest
-      parameters: []
 components:
   schemas:
     Position:
       title: Position
       type: object
-      x-tags:
-        - Models
       properties:
         Coordinates:
           $ref: '#/components/schemas/Coordinates'
         Altitude ASL (m):
           type: number
-      required:
-        - Coordinates
-        - Altitude ASL (m)
+      x-tags:
+        - Models
     Coordinates:
       title: Coordinates
       type: object
@@ -674,8 +659,6 @@ components:
     Autopilot:
       title: Autopilot
       type: object
-      x-tags:
-        - Models
       properties:
         AP Id:
           type: integer
@@ -742,7 +725,8 @@ components:
         - Timestamp (ms)
         - Wind Speed (m/s)
         - Wind Direction (rad)
-        - Camera Target
+      x-tags:
+        - Models
     Guidance-Mode:
       type: string
       title: Guidance Mode
