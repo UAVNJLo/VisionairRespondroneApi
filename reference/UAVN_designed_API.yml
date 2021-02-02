@@ -629,6 +629,12 @@ paths:
             schema:
               type: string
               description: Name of the POI
+          application/xml:
+            schema:
+              type: object
+              properties:
+                Name:
+                  type: string
       tags:
         - 4 Points Of Interest
 components:
