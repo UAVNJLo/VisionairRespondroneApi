@@ -623,20 +623,18 @@ paths:
         '404':
           description: POI Not Found
       description: Deletes a point of interest
+      tags:
+        - 4 Points Of Interest
       requestBody:
         content:
           application/json:
-            schema:
-              type: string
-              description: Name of the POI
-          application/xml:
             schema:
               type: object
               properties:
                 Name:
                   type: string
-      tags:
-        - 4 Points Of Interest
+              required:
+                - Name
 components:
   schemas:
     Position:
