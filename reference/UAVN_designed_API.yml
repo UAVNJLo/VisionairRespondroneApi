@@ -33,6 +33,7 @@ paths:
         name: Id
         in: path
         required: true
+        description: Autopilot ID
     get:
       summary: 0.2.2 Get Autopilot Info
       tags:
@@ -55,6 +56,7 @@ paths:
         name: Id
         in: path
         required: true
+        description: Autopilot ID
     put:
       summary: 0.3 Set Autopilot Mode
       operationId: put-Autopilots-Id-Mode
@@ -95,6 +97,7 @@ paths:
         name: Id
         in: path
         required: true
+        description: Autopilot ID
     put:
       summary: 0.4 Set Camera Target
       operationId: put-Autopilots-Id-CameraTarget
@@ -122,6 +125,7 @@ paths:
         name: Id
         in: path
         required: true
+        description: Autopilot ID
     put:
       summary: 0.1 Set Autopilot Pre-Flight Parameters
       operationId: put-Autopilots-Id-Pre-Flight
@@ -202,6 +206,7 @@ paths:
         name: Id
         in: path
         required: true
+        description: Autopilot ID
     get:
       summary: 1.1.1 Get Loaded Flight Plans
       tags:
@@ -245,7 +250,7 @@ paths:
                 description: Indices of flight plans kept (not deleted)
                 items:
                   type: integer
-      description: Deletes all the loaded flight plans
+      description: 'Deletes all the loaded flight plans, except for the default one and the one being executed in the moment of deleting'
       tags:
         - 1 Flight Plans
   '/Autopilots/{Id}/FlightPlans/{FP_Id}':
@@ -255,11 +260,13 @@ paths:
         name: Id
         in: path
         required: true
+        description: Autopilot ID
       - schema:
           type: string
         name: FP_Id
         in: path
         required: true
+        description: Flight Plan ID
     get:
       summary: 1.2.1 Get Flight Plan
       tags:
@@ -349,6 +356,7 @@ paths:
         name: Id
         in: path
         required: true
+        description: Autopilot ID
     get:
       summary: 2.1.1 Get Loaded Land Plans
       tags:
@@ -386,7 +394,7 @@ paths:
                   type: boolean
         '401':
           description: 'Unauthorized: Internal pilot rejected the request'
-      description: 'Deletes all the land plans loaded in the autopilot, except for the default one and the one being executed.'
+      description: 'Deletes all the land plans loaded in the autopilot, except for the default one and the one being executed'
       tags:
         - 2 Land Plans
   '/Autopilots/{Id}/LandPlans/{LP_Id}':
@@ -396,11 +404,13 @@ paths:
         name: Id
         in: path
         required: true
+        description: Autopilot ID
       - schema:
           type: string
         name: LP_Id
         in: path
         required: true
+        description: Land Plan ID
     get:
       summary: 2.2.1 Get Land Plan
       tags:
@@ -493,6 +503,7 @@ paths:
         name: Id
         in: path
         required: true
+        description: Autopilot ID
     delete:
       summary: 3.1 Delete All No Fly Zones
       operationId: delete-Autopilots-Id-NoFlyZones
@@ -513,11 +524,13 @@ paths:
         name: Id
         in: path
         required: true
+        description: Autopilot ID
       - schema:
           type: string
         name: NFZ_Id
         in: path
         required: true
+        description: No Fly Zone ID
     get:
       summary: 3.2.1 Get No Fly Zone
       tags:
