@@ -250,6 +250,10 @@ paths:
                 description: Indices of flight plans kept (not deleted)
                 items:
                   type: integer
+        '401':
+          description: 'Unauthorized: Internal pilot rejected the request'
+        '404':
+          description: Autopilot Not Found
       description: 'Deletes all the loaded flight plans, except for the default one and the one being executed in the moment of deleting'
       tags:
         - 1 Flight Plans
