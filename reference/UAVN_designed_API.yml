@@ -437,7 +437,7 @@ paths:
                     type: number
                   Landing Site Heading (rad):
                     type: number
-                  Land Offset:
+                  Land Offset (m):
                     type: number
                   Number of Waypoints:
                     type: integer
